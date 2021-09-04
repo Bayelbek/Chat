@@ -21,7 +21,7 @@ import '../App.css';
 
 import YourMessage from "./YourMessage";
 import MyMessage from "./MyMessage";
-import {Form, FormControl, Button, Col, Row} from "react-bootstrap";
+import {Form, FormControl, Button, Col, Row, InputGroup} from "react-bootstrap";
 
 
 
@@ -93,9 +93,10 @@ const useStyles = makeStyles((theme) => ({
         ...theme.mixins.toolbar,
     },
     content: {
-
+        width:'100%',
+        height:'580px',
         flexGrow: 1,
-        padding: theme.spacing(3),
+        // padding: theme.spacing(3),
     },
 }));
 
@@ -178,20 +179,20 @@ function ChatWin(props) {
                         ))}
                     </List>
                 </Drawer>
-                <main className={classes.content}>
-                    <div className={classes.toolbar} />
+                <main className={classes.content} >
+                    <div className={classes.toolbar}  />
+                    <div  className={'footer'}>
+                        <FormControl style={{width:'110%',height:50,display:"inline-block"}}/>
+                        <Button style={{height:50}}>Кнопка</Button>
+                    </div>
                         <YourMessage/>
                         <MyMessage/>
                         <YourMessage/>
                         <MyMessage/>
-                    <Row className={'fixed-bottom'}>
-                        <Col xs={10}>
-                            <input type="text" className={'form form-control'}/>
-                        </Col>
-                        <Col xs={2}>
-                            <Button>Push</Button>
-                        </Col>
-                    </Row>
+                    <YourMessage/>
+                    <MyMessage/>
+                    <YourMessage/>
+                    <MyMessage/>
 
                 </main>
             </div>
