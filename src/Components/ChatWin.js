@@ -1,203 +1,122 @@
 import React, {useState} from 'react';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-import '../App.css';
-
-import YourMessage from "./YourMessage";
+import {
+    Button,
+    Col,
+    Container,
+    Form,
+    FormControl,
+    FormGroup,
+    InputGroup,
+    ListGroup,
+    Navbar,
+    Row
+} from "react-bootstrap";
 import MyMessage from "./MyMessage";
-import {Form, FormControl, Button, Col, Row, InputGroup} from "react-bootstrap";
-
-
-
-
-const drawerWidth = 240;
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-
-    },
-    appBar: {
-        background:'rgb(12, 101, 105)',
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-    },
-    appBarShift: {
-
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    menuButton: {
-
-        marginRight: 36,
-    },
-    hide: {
-        display: 'none',
-    },
-    drawer: {
-
-        width: drawerWidth,
-        flexShrink: 0,
-        whiteSpace: 'nowrap',
-    },
-    drawerOpen: {
-        background:'#1e292b',
-        width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    drawerClose: {
-        background:'#1e292b',
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        overflowX: 'hidden',
-        width: theme.spacing(7) + 1,
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9) + 1,
-        },
-    },
-    toolbar: {
-
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
-    },
-    content: {
-        width:'100%',
-        height:'580px',
-        flexGrow: 1,
-        // padding: theme.spacing(3),
-    },
-}));
+import YourMessage from "./YourMessage";
+import '../App.css'
+import axios from "axios";
+import {useEffect} from "react";
 
 
 function ChatWin(props) {
     const [users, setUsers] = useState([]);
-    const classes = useStyles();
-    const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [message, setMessage] = useState([]);
+    const [input, setInput] = useState('');
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
+    useEffect(() => {
+        const a = axios.get(`https://api.chat.besoft.kg/v1/message`, {
+            headers: {
+                'Authorization': `Bearer ${JSON.parse(localStorage.getItem('data'))[0]} `
+            }
+        })
+        a.then(({data}) => {
+            setMessage(data.payload)
+        })
 
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
+        const b =  axios.get(`https://api.chat.besoft.kg/v1/user`, {
+            headers: {
+                'Authorization': `Bearer ${JSON.parse(localStorage.getItem('data'))[0]} `
+            }
+        })
+            b.then(({data})=>{
+                setUsers(data.payload)
+                console.log(data)
+            })
+    }, []);
+
+
+    const sendMessage = () => {
+        const a = axios.post(`https://api.chat.besoft.kg/v1/message`, {
+            text: input
+        }, {
+            headers: {
+                'Authorization': `Bearer ${JSON.parse(localStorage.getItem('data'))[0]} `
+            }
+        });
+        a.then(({data}) => {
+            setInput('')
+        })
+        a.finally(()=>{
+
+        })
+    }
     return (
-        <>
-            return (
-            <div className={classes.root}>
-                <CssBaseline />
-                <AppBar
-                    position="fixed"
-                    className={clsx(classes.appBar, {
-                        [classes.appBarShift]: open,
-                    })}
-                >
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            edge="start"
-                            className={clsx(classes.menuButton, {
-                                [classes.hide]: open,
+        <div className={'chat'}>
+            <Navbar style={{background: '#003367'}} variant="dark">
+                <Container>
+                    <Navbar.Brand href="#home">BESOFT CHAT</Navbar.Brand>
+                </Container>
+            </Navbar>
+            <Row className={'m-0 p-0'}>
+                <Col className={'p-0'} xs={3}>
+                    <div className={'d-none d-md-block users'} style={{height: 530, width: '100%', background: '#002045',overflowY:'scroll'}}>
+                        <ListGroup as="ul" >
+                            <div className={'container'}>
+                                <ListGroup.Item className={'text-center'} as="li"  style={{fontWeight:600,background:'#ffffff'}} >
+                                    В группе
+                                </ListGroup.Item>
+                            {users.map((item)=>{
+                                return(
+                                    <ListGroup.Item as="li"  style={{background:'#002045',color:"white"}} >
+                                        {item.full_name} /<span style={{color:'grey'}}>{item.phone_number}</span>
+                                    </ListGroup.Item>
+                                )
                             })}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography variant="h6" noWrap>
-                            CHAT GROUP
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="permanent"
-                    className={clsx(classes.drawer, {
-                        [classes.drawerOpen]: open,
-                        [classes.drawerClose]: !open,
-                    })}
-                    classes={{
-                        paper: clsx({
-                            [classes.drawerOpen]: open,
-                            [classes.drawerClose]: !open,
-                        }),
-                    }}
-                >
-                    <div className={classes.toolbar}>
-                        <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                        </IconButton>
+                            </div>
+                        </ListGroup>
                     </div>
-                    <Divider />
-                    <List>
-                        {users.map((text, index) => (
-                            <ListItem button key={text}>
-                                <ListItemIcon>{}</ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Divider />
-                    <List>
-                        {users.map((text, index) => (
-                            <ListItem button key={text}>
-                                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItem>
-                        ))}
-                    </List>
-                </Drawer>
-                <main className={classes.content} >
-                    <div className={classes.toolbar}  />
-                    <div  className={'footer'}>
-                        <FormControl style={{width:'110%',height:50,display:"inline-block"}}/>
-                        <Button style={{height:50}}>Кнопка</Button>
+                </Col>
+                <Col xs={12} md={9} className={'p-0'}>
+                    <div className={'sc'} style={{height: 480, width: '100%', overflowY: "scroll"}}>
+                        {message.map((item) => {
+                            if (item.user.id === JSON.parse(localStorage.getItem('data'))[1].id) {
+                                return <MyMessage picture={item.user.picture ? item.user.picture.path.original : null}
+                                                  text={item.text} created_at={item.created_at}/>
+                            } else {
+                                return <YourMessage full_name={item.user.full_name}
+                                                    picture={item.user.picture ? item.user.picture.path.original : null}
+                                                    text={item.text}
+                                                    created_at={item.created_at}/>
+                            }
+                        })}
                     </div>
-                        <YourMessage/>
-                        <MyMessage/>
-                        <YourMessage/>
-                        <MyMessage/>
-                    <YourMessage/>
-                    <MyMessage/>
-                    <YourMessage/>
-                    <MyMessage/>
-
-                </main>
-            </div>
-
-        </>
+                    <div>
+                        <InputGroup>
+                            <FormControl
+                                onChange={(e) => setInput(e.target.value)}
+                                value={input}
+                            />
+                            <Button
+                                type={'submit'}
+                                onClick={() => {
+                                    sendMessage()
+                                }}
+                                variant={'danger'} disabled={ input.length < 1}>отправить</Button>
+                        </InputGroup>
+                    </div>
+                </Col>
+            </Row>
+        </div>
     );
 }
 

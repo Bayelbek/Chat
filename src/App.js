@@ -10,10 +10,8 @@ export default function App() {
     }
     return (
         <>
-            <div className={'container'}>
                 <ToastContainer/>
                 <ChatWin/>
-            </div>
         </>
     )
 
